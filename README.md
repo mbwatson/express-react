@@ -5,9 +5,7 @@ This is a `create-react-app`-generated React application deployed with Express, 
 
 ## What This Accomplishes
 
-No frills. Get up and running quickly.
-
-This will not be the most efficient way to deploy a Node application, but it is a nice place to start or just a quick way to get it going.
+No frills--get up and running quickly. This is clearly not the most efficient way to deploy a Node application, but it is a nice place to start or just a quick way to get it going.
 
 ## How to Use This
 
@@ -21,20 +19,20 @@ Remove everything from the `/app` directory, and dump your project in there. Jus
 $ docker build .
 ```
 
-Well, identifying the image later may be nice:
+Identifying the image later may be nice, so we tag it
 
 ```bash
-$ docker build -t express-server .
+$ docker build -t express-react-server .
 ```
 
 ### Run
 
 By default, the application run on port 3000, so a common configuration will forward the host's port 80 onto the container's 3000
 
-
 ```bash
-$ docker run -p 80:3000 express-server
+$ docker run -p 80:3000 express-react-server
 ```
+
 This makes the application accessible at `http://localhost` on the host. Of course, other ports are fine.
 
 ## Want a Slimmer Deployment?
