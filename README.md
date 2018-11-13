@@ -5,37 +5,50 @@ This is a `create-react-app`-generated React application deployed with Express, 
 
 ## What This Accomplishes
 
-No frills--get up and running quickly. This is clearly not the most efficient way to deploy a Node application, but it is a nice place to start or just a quick way to get it going.
+No frills--get up and running quickly.
 
 ## How to Use This
 
 Remove everything from the `/app` directory, and dump your project in there. Just be sure that the necessary requirements are outlined for Node in the `package.json`.
 
-## Deploy
+Tagging the builds and naming the running containers can be nice, as can running the containers detached. Thus those options appear in the examples below.
 
-### Build
+Other common things seen here are the following:
 
-```bash
-$ docker build .
-```
+- There are two Dockerfiles--one for dev, one for prod. Each build call references the appropriate file.
+- By default, the application run on port 3000, so a common configuration will forward the host's port 80 onto the container's 3000. Then the application will be accessible at `http://localhost` on the host. Of course, other ports are fine.
 
-Identifying the image later may be nice, so we tag it
+## Development
 
-```bash
-$ docker build -t express-react-server .
-```
-
-### Run
-
-By default, the application run on port 3000, so a common configuration will forward the host's port 80 onto the container's 3000
+#### Build
 
 ```bash
-$ docker run -p 80:3000 express-react-server
+$ docker build -t express-react-server/dev -f Dockerfile-dev .
 ```
 
-This makes the application accessible at `http://localhost` on the host. Of course, other ports are fine.
+#### Run
 
-## Want a Slimmer Deployment?
+```bash
+$ docker run -p 80:3000 --name webapp-dev -d express-react-server/dev
+```
+
+## Production
+
+This is clearly not the most efficient way to deploy a Node application, but it is a nice place to start or just a quick way to get it going.
+
+#### Build
+
+```bash
+$ docker build -t express-react-server/prod -f Dockerfile-prod .
+```
+
+#### Run
+
+```bash
+$ docker run -p 80:3000 --name webapp-prod -d express-react-server/dev
+```
+
+#### Want a Slimmer Deployment?
 
 For a slimmer deployment container, go for multistage builds. This will allow building the web application in one (Node) container and then copy the build files over to another one (a server container) for serving.
 
