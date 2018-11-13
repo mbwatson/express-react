@@ -5,51 +5,70 @@ This is a `create-react-app`-generated React application deployed with Express, 
 
 ## What This Accomplishes
 
-No frills--get up and running quickly.
+No frills--get your basic React application up and running quickly.
 
 ## How to Use This
 
-Remove everything from the `/app` directory, and dump your project in there. Just be sure that the necessary requirements are outlined for Node in the `package.json`.
+Replace everything in the `/app` directory with your project, ensuring that the necessary requirements are outlined for Node in the `package.json` file.
 
-Tagging the builds and naming the running containers can be nice, as can running the containers detached. Thus those options appear in the examples below.
+Tagging the builds and naming the running containers can be nice, as can running the containers detached. Thus those options appear in the examples below, as do a few of these other common things:
 
-Other common things seen here are the following:
-
-- There are two Dockerfiles--one for dev, one for prod. Each build call references the appropriate file.
-- By default, the application run on port 3000, so a common configuration will forward the host's port 80 onto the container's 3000. Then the application will be accessible at `http://localhost` on the host. Of course, other ports are fine.
+- There are two types of Dockerfiles--one designed for a development build and two for production builds. Each build command references the appropriate file.
+- By default, the application will run on port 3000. Thus a common configuration will forward the host's port 80 onto the container's 3000, making the application accessible at `http://localhost` on the host. Of course, other ports are fine.
 
 ## Development
 
-#### Build
+##### Build
 
 ```bash
-$ docker build -t express-react-server/dev -f Dockerfile-dev .
+$ docker build -t react-app/dev -f Dockerfile-dev .
 ```
 
-#### Run
+##### Run
 
 ```bash
-$ docker run -p 80:3000 --name webapp-dev -d express-react-server/dev
+$ docker run -p 80:3000 --name webapp-dev -d react-app/dev
 ```
 
 ## Production
 
-This is clearly not the most efficient way to deploy a Node application, but it is a nice place to start or just a quick way to get it going.
+##### Build and Serve with Express
 
-#### Build
-
-```bash
-$ docker build -t express-react-server/prod -f Dockerfile-prod .
-```
-
-#### Run
+This is clearly not the most efficient way to deploy a Node application, but it is a nice place to start or just a quick way to get it going. For a slimmer option, see [below](#multi-stage-build-and-deploy-with-nginx).
 
 ```bash
-$ docker run -p 80:3000 --name webapp-prod -d express-react-server/dev
+$ docker build -t react-app/prod -f Dockerfile-prod-express .
 ```
 
-#### Want a Slimmer Deployment?
+##### Run
 
-For a slimmer deployment container, go for multistage builds. This will allow building the web application in one (Node) container and then copy the build files over to another one (a server container) for serving.
+```bash
+$ docker run -p 80:3000 --name webapp-prod -d react-app/prod
+```
 
-I use a multistage build inside the frontend container in [this project](https://github.com/renciweb/publications/blob/master/frontend/Dockerfile-prod), which may be a nice reference until this project's versatility bulks up. The [Docker documentation on Multi-Stage Builds](https://docs.docker.com/develop/develop-images/multistage-build/) is a more informative resource, though.
+### Multi-Stage Build and Deploy with Nginx
+
+For a slimmer deployment container, we can employ multistage builds. This will allows for building the web application in one container (Node, in this case) and then copying the build files over to another container (a server container, Nginx in this case) to be served.
+
+##### Build
+
+```bash
+$ docker build -t react-app/prod -f Dockerfile-prod-nginx .
+```
+
+##### Run
+
+Here, we forward the host port 80 to the container's port 80 since that is the default port for HTTP access expected by Nginx.
+
+```bash
+$ docker run --name react-app -p 80:80 -d react-app/prod 
+```
+
+## Additional References
+
+- Docker
+  + Docker: [https://docs.docker.com](https://docs.docker.com)
+  + Docker Compose: [https://docs.docker.com/compose/](https://docs.docker.com/compose/)
+  + Docker Multi-Stage Builds [https://docs.docker.com/develop/develop-images/multistage-build/](https://docs.docker.com/develop/develop-images/multistage-build/)
+- Nginx: [https://nginx.org/en/docs/](https://nginx.org/en/docs/)
+- React JS: [https://reactjs.org/](https://reactjs.org/)
