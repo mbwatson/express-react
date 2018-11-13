@@ -36,6 +36,8 @@ $ docker run -p 80:3000 --name webapp-dev -d react-app/dev
 
 This is clearly not the most efficient way to deploy a Node application, but it is a nice place to start or just a quick way to get it going. For a slimmer option, see [below](#multi-stage-build-and-deploy-with-nginx).
 
+##### Build
+
 ```bash
 $ docker build -t react-app/prod -f Dockerfile-prod-express .
 ```
