@@ -6,12 +6,14 @@ RUN mkdir app
 WORKDIR /app
 
 COPY ./app/package*.json ./
-
 RUN npm install
-COPY ./app ./
-COPY ./server.js ./
 
+COPY ./app ./
 RUN npm install express --save
+
 RUN npm run build
+
+COPY ./server.js .
+EXPOSE 3000
 
 CMD ["node", "server"]
