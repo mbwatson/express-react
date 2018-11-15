@@ -9,25 +9,41 @@ No frills--get your basic React application up and running quickly.
 
 ## How to Use This
 
-Replace everything in the `/app` directory with your project, ensuring that the necessary requirements are outlined for Node in the `package.json` file.
+Your application should live in a directory called app that is a direct child of the root directory of this repository, as shown in the tree shown below.
 
-Tagging the builds and naming the running containers can be nice, as can running the containers detached. Thus those options appear in the examples below, as do a few of these other common things:
+```bash
+$ tree -L 2
+.
+├── app        # <-- The "app" directory is the root of your React application
+│   ├── node_modules
+│   ├── package.json
+│   ├── package-lock.json
+│   ├── public
+│   └── src
+├── Dockerfile-dev
+├── Dockerfile-prod
+├── README.md
+└── server.js
+```
 
-- There are two types of Dockerfiles--one designed for a development build and onw for a production build. Each build command references the appropriate file.
-- By default, the application will run on port 3000. Thus a common configuration will forward the host's port 80 onto the container's 3000, making the application accessible at `http://localhost` on the host. Of course, other ports are fine.
+There is already a basic application (generated with `create-react-app`) in that folder, but yours should behave nicely. Just ensure that the necessary requirements are outlined for Node in the `package.json` file.
+
+There are two flavors of docker-compose files and of Dockerfiles--one of each for development and production builds. Each docker-compose command references the appropriate file.
+
+By default, the application will run on port 3000 in development. Thus a common configuration will forward the host's port 80 onto the container's 3000, making the application accessible at `http://localhost` on the host. Of course, other ports are fine. We configure that `server.js` to also listen on port 3000, so the `80:3000` is identical in both development and production.
 
 ## Development
 
 ##### Build
 
 ```bash
-$ docker build -t react-app/dev -f Dockerfile-dev .
+$ docker-compose build
 ```
 
 ##### Run
 
 ```bash
-$ docker run -p 80:3000 --name webapp-dev -d react-app/dev
+$ docker-compose up
 ```
 
 ## Production
@@ -39,13 +55,15 @@ This is clearly not the most efficient way to deploy a Node application, but it 
 ##### Build
 
 ```bash
-$ docker build -t react-app/prod -f Dockerfile-prod .
+$ docker-compose -f docker-compose-prod.yml build
 ```
 
 ##### Run
 
+Here, we forward the host port 80 to the container's port 3000 since that port is the one on which `server.js` is expecting traffic.
+
 ```bash
-$ docker run -p 80:3000 --name webapp-prod -d react-app/prod
+$ docker-compose -f docker-compose-prod.yml up
 ```
 
 ## Additional References
